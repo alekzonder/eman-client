@@ -177,10 +177,27 @@ class EventApi {
     /**
      * send and wait for response several request events
      *
+     * @example
+     * api.batchRequest()
+     *    .request('messages.get').data({id:1}).add()
+     *    .request('users.get').data({id: 1}).add()
+     *    .send()
+     *    .then(() => { ... })
+     *    .catch(() => { ... });
+     *
      * @return {BatchRequestChain}
      */
     batchRequest() {
         return new BatchRequestChain(this);
+    }
+
+    /**
+     * get entity
+     * 
+     * @return {String}
+     */
+    getEntity() {
+        return (this._config.entity) ? this._config.entity : null;
     }
 
     /**
