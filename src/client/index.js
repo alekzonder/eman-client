@@ -11,7 +11,7 @@ class EmanClient {
     /**
      * @param  {log4js} logger
      * @param  {Object} config client config
-     * @return {EmanClient} 
+     * @return {EmanClient}
      */
     constructor(logger, config) {
         this._logger = logger;
@@ -116,7 +116,7 @@ class EmanClient {
      */
     on(event, cb) {
         this._logger.trace(`eman ...= "${event}"`);
-        this._io.on(event, cb);
+        return this._io.on(event, cb);
     }
 
     /**

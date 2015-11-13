@@ -21,6 +21,7 @@ var api = new EmanApi(logger, config);
 var process = () => {
 
     //  emit single event, no response
+    //
     logger.info('emit "test" event');
 
     api.event('test').data({
@@ -45,7 +46,6 @@ var process = () => {
            logger.error(err);
        });
 
-
      api.on('companies.get', (event) => {
          api.response(event).data({from: 'companies', result: event.data}).send();
      });
@@ -65,8 +65,8 @@ var process = () => {
 
      // making batch requests
      api.batchRequest()
-         .request('messages.post').data({id: 1}).timeout(300).add()
-         .request('companies.get').data({id: 100}).timeout(100).add()
+         .request('messages.post').data({id: 1}).timeout(3000).add()
+         .request('companies.get').data({id: 100}).timeout(2000).add()
          .send()
          .then((batch) => {
              logger.info(batch);
@@ -83,9 +83,9 @@ var process = () => {
                  logger.info(data);
              })
              .catch((error) => {
-                 logger.error(error);
+                 logger.info('got valid error', error);
                  api.disconnect();
-             })
+             });
 
          })
          .catch((error) => {

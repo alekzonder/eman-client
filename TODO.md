@@ -1,0 +1,1 @@
+- removeListener func in Api

@@ -1,6 +1,6 @@
 # eman-client
 
-Client, API for eman 
+Client, API for eman
 
 # dependencies
 

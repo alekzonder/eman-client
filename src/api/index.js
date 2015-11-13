@@ -26,8 +26,8 @@ class EventApi {
     constructor(logger, config) {
         this._logger = logger;
         this._config = config;
-        this._eman = new EmanClient(logger, this._config.eman);
-        this._name = this._eman.getName();
+        this._client = new EmanClient(logger, this._config.eman);
+        this._name = this._client.getName();
 
         this._events = new EventEmitter();
     }
@@ -41,15 +41,15 @@ class EventApi {
     connect() {
         return new Promise((resolve, reject) => {
 
-            this._eman.connect()
+            this._client.connect()
                 .then(() => {
 
-                    this._eman.on('api:response', (event) => {
+                    this._client.on('api:response', (event) => {
                         this._events.emit('response:' + event.request_id, event);
                     });
 
                     this._events.on('request', (event) => {
-                        this._eman.sendApiRequest(event);
+                        this._client.sendApiRequest(event);
                     });
 
                     resolve();
@@ -65,7 +65,7 @@ class EventApi {
      * disconnect from eman
      */
     disconnect() {
-        this._eman.disconnect();
+        this._client.disconnect();
     }
 
     /**
@@ -75,7 +75,8 @@ class EventApi {
      * @param  {Function} cb
      */
     on(event, cb) {
-        this._eman.on(event, cb);
+        this._client.emit('_service:api:request:subscribe', {name: event});
+        this._client.on(event, cb);
     }
 
     /**
@@ -146,7 +147,7 @@ class EventApi {
             });
 
             timeoutInstance = setTimeout(() => {
-               reject({message: 'Timeout', code: 'timeout'});
+               reject({message: 'Request Timeout', code: 'timeout', event: event});
            }, timeout);
 
             this._events.emit('request', event);
@@ -171,7 +172,7 @@ class EventApi {
      * @param  {Object} event
      */
     sendResponse(event) {
-        this._eman.sendApiResponse(event);
+        this._client.sendApiResponse(event);
     }
 
     /**
@@ -193,7 +194,7 @@ class EventApi {
 
     /**
      * get entity
-     * 
+     *
      * @return {String}
      */
     getEntity() {
